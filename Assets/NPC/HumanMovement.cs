@@ -3,6 +3,13 @@ using UnityEngine.InputSystem.Controls;
 
 public class HumanMovement : MonoBehaviour
 {
+    private Vector2 _targetPosition;
+    private float timer = 0f;
+    private float idleTime = 3f;
+    private char _state = 'i';
+    [SerializeField] GameObject _detection;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,7 +24,23 @@ public class HumanMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * Random.Range(1, 5) * Time.deltaTime;
+        switch (_state)
+        {
+            case 'i':
+                timer += Time.fixedDeltaTime;
+                if (timer >= idleTime)
+                {
+                    _state = 'w';
+                    timer = 0f;
+                    _targetPosition = new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
+                }
+                break;
+            case 'w':
+                Vector2 movement = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime);
+                _detection.transform.Rotate(transform.position, Mathf.Atan2(movement.x, movement.y));
+                transform.position = movement;
+                break;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -43,9 +66,9 @@ public class HumanMovement : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.name == "Background")
-        {
-            Destroy(gameObject);
-        }
+        //if (collision.gameObject.name == "Background")
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 }
