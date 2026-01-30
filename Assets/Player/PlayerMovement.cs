@@ -6,18 +6,64 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private int PlayerSpeed = 10;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private SpriteRenderer player_sprite;
 
     private Vector3 moveVec = Vector3.zero;
+
+    [SerializeField] private Sprite spr_normal;
+    [SerializeField] private Sprite spr_scare;
+
+    [SerializeField] private int ScareDuration = 60;
+    private int ScareTimer = 0;
+
+    [SerializeField] private int ScareCooldown = 60;
+    private int ScareCooldownTimer = 0;
+
+    
+
+    enum PLAYER_STATE
+    {
+        Normal,
+        Scare
+    }
+
+    private PLAYER_STATE player_state = PLAYER_STATE.Normal;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        player_sprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     { 
+        switch(player_state)
+        {
+            case PLAYER_STATE.Normal:
+
+                ScareCooldownTimer = Mathf.Max(0, ScareCooldownTimer - 1);
+
+                
+
+                break;
+
+            case PLAYER_STATE.Scare:
+
+                ScareTimer = Mathf.Max(0, ScareTimer - 1);
+
+                if (ScareTimer == 0)
+                {
+                    player_state = PLAYER_STATE.Normal;
+                    player_sprite.sprite = spr_normal;
+                    ScareCooldownTimer = ScareCooldown;
+                }
+
+                break;
+
+
+        }
     }
 
     private void FixedUpdate()
@@ -31,5 +77,15 @@ public class PlayerMovement : MonoBehaviour
     public void GetMove(InputAction.CallbackContext context)
     {
         moveVec = (Vector3) context.ReadValue<Vector2>() * PlayerSpeed;
-    }
+    }//GetMove
+
+    public void GetAttack()
+    {
+        if (player_state == PLAYER_STATE.Normal && ScareCooldownTimer <= 0)
+        {
+            player_state = PLAYER_STATE.Scare;
+            ScareTimer = ScareDuration;
+            player_sprite.sprite = spr_scare;
+        }
+    }//GetAttack
 }

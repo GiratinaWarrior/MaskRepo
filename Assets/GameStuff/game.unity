@@ -226,7 +226,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.7
+  orthographic size: 3
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -311,6 +311,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 7339757489445899651, guid: 3b0de5559c2bd4d41b00443be3ecc405, type: 3}
+  human: {fileID: 4938762742874732869, guid: 1b173d9d71d1b8c49a30b281d28c9826, type: 3}
+  HumanSpawnRate: 80
+  SpawnRange: 5
 --- !u!4 &1869895719
 Transform:
   m_ObjectHideFlags: 0
@@ -320,7 +323,7 @@ Transform:
   m_GameObject: {fileID: 1869895717}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.01, y: -0.02, z: 0}
+  m_LocalPosition: {x: -3.99, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
