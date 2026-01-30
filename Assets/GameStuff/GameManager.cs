@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         scoreTMP = scoreTextObject.GetComponent<TextMeshPro>();
+        HumanSpawnTimer = HumanSpawnRate;
     }
 
     private void Awake()

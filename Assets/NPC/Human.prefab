@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 8206669671225760968}
   - component: {fileID: 6790439260532052325}
   - component: {fileID: 641970718486412628}
+  - component: {fileID: -3534839945433648094}
   m_Layer: 0
   m_Name: Human
   m_TagString: Human
@@ -255,6 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _detection: {fileID: 2377796218182790727}
+  scaredRunSpeed: 5
 --- !u!50 &6790439260532052325
 Rigidbody2D:
   serializedVersion: 5
@@ -328,3 +330,16 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.45, y: 0.92}
   m_EdgeRadius: 0
+--- !u!114 &-3534839945433648094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4938762742874732869}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c395616ead3a154ca7b24d6c170ac49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeTime: 1

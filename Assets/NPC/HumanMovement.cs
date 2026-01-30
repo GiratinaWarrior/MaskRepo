@@ -10,6 +10,11 @@ public class HumanMovement : MonoBehaviour
     [SerializeField] GameObject _detection;
 
 
+
+    private bool isSpooked = false;
+    public int scaredRunSpeed = 5;
+    private Vector3 runDirVec = Vector3.zero;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,28 +24,12 @@ public class HumanMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isSpooked) transform.position += runDirVec * scaredRunSpeed * Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        switch (_state)
-        {
-            case 'i':
-                timer += Time.fixedDeltaTime;
-                if (timer >= idleTime)
-                {
-                    _state = 'w';
-                    timer = 0f;
-                    _targetPosition = new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
-                }
-                break;
-            case 'w':
-                Vector2 movement = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime);
-                _detection.transform.Rotate(transform.position, Mathf.Atan2(movement.x, movement.y));
-                transform.position = movement;
-                break;
-        }
+        //transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * Random.Range(1, 5) * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -52,15 +41,18 @@ public class HumanMovement : MonoBehaviour
 
             Debug.Log("Human Scary touched");
            
-            //add score
-            player.updateScareCount();
-
-
-
             //HUMAN RUNS AWAY OR SOMETHING
             //****TO DO****
-            
+            if (!isSpooked)
+            {
+                player.updateScareCount();
 
+                
+                runDirVec = Vector3.Normalize(transform.position - player.transform.position);
+                gameObject.GetComponent<FadeDestroy>().enabled = true;
+
+                isSpooked = true;
+            }
         }
     }
 

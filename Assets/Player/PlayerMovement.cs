@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private SpriteRenderer player_sprite;
     [SerializeField] private CircleCollider2D scareTrigger;
 
+    [SerializeField] private GameObject shoutShockwave;
+
     [SerializeField] private int PlayerSpeed = 10;
     private Vector3 moveVec = Vector3.zero;
 
@@ -107,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
         ScareTimer = ScareDuration;
         player_sprite.sprite = spr_scare;
         scareTrigger.enabled = true;
+        Instantiate(shoutShockwave, transform.position, Quaternion.identity);
     }
 
     private void ScareDeactivate()
