@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6065297577066866409}
   - component: {fileID: -884295160256619875}
   - component: {fileID: 7064522587760144865}
+  - component: {fileID: 3141998687361505613}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -205,13 +206,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090274b15097bf84badbd12c3fe4974e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerSpeed: 5
   rb: {fileID: -884295160256619875}
   player_sprite: {fileID: 1530981715823232669}
+  scareTrigger: {fileID: 0}
+  PlayerSpeed: 5
   spr_normal: {fileID: -6123283186113544664, guid: 95c763913c4fc0147a0974eb2ea21d79, type: 3}
   spr_scare: {fileID: 3283607692860520563, guid: ed60452fb9a0bd043aa65f70c53a6e01, type: 3}
-  ScareDuration: 300
+  ScareDuration: 100
   ScareCooldown: 60
+  score: 0
 --- !u!50 &-884295160256619875
 Rigidbody2D:
   serializedVersion: 5
@@ -285,3 +288,39 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.81, y: 0.97}
   m_EdgeRadius: 0
+--- !u!58 &3141998687361505613
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7339757489445899651}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1

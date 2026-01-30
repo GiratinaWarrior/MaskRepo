@@ -17,6 +17,35 @@ public class HumanMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * Random.Range(1, 5) * Time.deltaTime;
+        //transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * Random.Range(1, 5) * Time.deltaTime;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //If this human collides with the player
+        if (collision.gameObject.tag == "Player")
+        {
+            PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
+
+            Debug.Log("Human Scary touched");
+           
+            //add score
+            player.updateScareCount();
+
+
+
+            //HUMAN RUNS AWAY OR SOMETHING
+            //****TO DO****
+            
+
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Background")
+        {
+            Destroy(gameObject);
+        }
     }
 }

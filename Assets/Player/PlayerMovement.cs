@@ -4,10 +4,12 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
 
-    [SerializeField] private int PlayerSpeed = 10;
+    //Components
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer player_sprite;
+    [SerializeField] private CircleCollider2D scareTrigger;
 
+    [SerializeField] private int PlayerSpeed = 10;
     private Vector3 moveVec = Vector3.zero;
 
     [SerializeField] private Sprite spr_normal;
@@ -19,7 +21,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private int ScareCooldown = 60;
     private int ScareCooldownTimer = 0;
 
-    
+    public int score = 0;
+    private int scareCount = 0;
 
     enum PLAYER_STATE
     {
@@ -29,23 +32,25 @@ public class PlayerMovement : MonoBehaviour
 
     private PLAYER_STATE player_state = PLAYER_STATE.Normal;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player_sprite = GetComponent<SpriteRenderer>();
+        scareTrigger = GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
-    { 
-        switch(player_state)
+    {
+        switch (player_state)
         {
             case PLAYER_STATE.Normal:
 
                 ScareCooldownTimer = Mathf.Max(0, ScareCooldownTimer - 1);
 
-                
+
 
                 break;
 
@@ -55,9 +60,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (ScareTimer == 0)
                 {
-                    player_state = PLAYER_STATE.Normal;
-                    player_sprite.sprite = spr_normal;
-                    ScareCooldownTimer = ScareCooldown;
+                    ScareDeactivate();
                 }
 
                 break;
@@ -76,16 +79,43 @@ public class PlayerMovement : MonoBehaviour
     //the player will change directions based on the given input
     public void GetMove(InputAction.CallbackContext context)
     {
-        moveVec = (Vector3) context.ReadValue<Vector2>() * PlayerSpeed;
+        moveVec = (Vector3)context.ReadValue<Vector2>() * PlayerSpeed;
     }//GetMove
 
     public void GetAttack()
     {
         if (player_state == PLAYER_STATE.Normal && ScareCooldownTimer <= 0)
         {
-            player_state = PLAYER_STATE.Scare;
-            ScareTimer = ScareDuration;
-            player_sprite.sprite = spr_scare;
+            ScareActivate();
         }
     }//GetAttack
+
+    public void updateScareCount()
+    {
+        scareCount++;
+        //scoreText.text = "Scare Count: " + scareCount;
+    }
+
+    public bool PlayerIsScary()
+    {
+        return (player_state == PLAYER_STATE.Scare);
+    }
+
+    private void ScareActivate()
+    {
+        player_state = PLAYER_STATE.Scare;
+        ScareTimer = ScareDuration;
+        player_sprite.sprite = spr_scare;
+        scareTrigger.enabled = true;
+    }
+
+    private void ScareDeactivate()
+    {
+        player_state = PLAYER_STATE.Normal;
+        player_sprite.sprite = spr_normal;
+        ScareCooldownTimer = ScareCooldown;
+        scareTrigger.enabled = false;
+    }
+
+
 }
