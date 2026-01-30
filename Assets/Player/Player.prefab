@@ -208,7 +208,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: -884295160256619875}
   player_sprite: {fileID: 1530981715823232669}
-  scareTrigger: {fileID: 0}
+  scareTrigger: {fileID: 3141998687361505613}
+  shoutShockwave: {fileID: 8725745748364352659, guid: 4b516b29257a8f44587958742e1297fb, type: 3}
   PlayerSpeed: 5
   spr_normal: {fileID: -6123283186113544664, guid: 95c763913c4fc0147a0974eb2ea21d79, type: 3}
   spr_scare: {fileID: 3283607692860520563, guid: ed60452fb9a0bd043aa65f70c53a6e01, type: 3}
