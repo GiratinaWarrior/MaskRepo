@@ -137,7 +137,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6065297577066866409}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: GetAttack
+        m_MethodName: JumpScare
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -189,6 +189,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 0391df80-05e1-444b-a72e-fc80dfb903b2
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6065297577066866409}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Kill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f9ec0bc9-c9ff-43fd-b7d6-b6374f698946
+    m_ActionName: 'Player/Kill[/Keyboard/x,/Mouse/rightButton,/Keyboard/p]'
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -208,13 +224,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: -884295160256619875}
   player_sprite: {fileID: 1530981715823232669}
-  scareTrigger: {fileID: 3141998687361505613}
+  abilityTrigger: {fileID: 0}
   shoutShockwave: {fileID: 8725745748364352659, guid: 4b516b29257a8f44587958742e1297fb, type: 3}
   PlayerSpeed: 5
   spr_normal: {fileID: -6123283186113544664, guid: 95c763913c4fc0147a0974eb2ea21d79, type: 3}
   spr_scare: {fileID: 3283607692860520563, guid: ed60452fb9a0bd043aa65f70c53a6e01, type: 3}
-  ScareDuration: 100
+  spr_kill: {fileID: -2928154779374978681, guid: 34acf1ac02a8ecb4580b2878aaa7d08d, type: 3}
+  ScareDuration: 60
   ScareCooldown: 60
+  KillDuration: 30
+  KillCooldown: 40
   score: 0
 --- !u!50 &-884295160256619875
 Rigidbody2D:

@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     //Components
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer player_sprite;
-    [SerializeField] private CircleCollider2D scareTrigger;
+    [SerializeField] private CircleCollider2D abilityTrigger;
 
     [SerializeField] private GameObject shoutShockwave;
 
@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Sprite spr_normal;
     [SerializeField] private Sprite spr_scare;
+    [SerializeField] private Sprite spr_kill;
 
     [SerializeField] private int ScareDuration = 60;
     private int ScareTimer = 0;
@@ -23,13 +24,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private int ScareCooldown = 60;
     private int ScareCooldownTimer = 0;
 
+    [SerializeField] private int KillDuration = 30;
+    private int KillTimer = 0;
+
+    [SerializeField] private int KillCooldown = 40;
+    private int KillCooldownTimer = 0;
+
     public int score = 0;
     private int scareCount = 0;
+
+    private bool InKillRange = false;
 
     enum PLAYER_STATE
     {
         Normal,
-        Scare
+        Scare,
+        Kill
     }
 
     private PLAYER_STATE player_state = PLAYER_STATE.Normal;
@@ -40,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         player_sprite = GetComponent<SpriteRenderer>();
-        scareTrigger = GetComponent<CircleCollider2D>();
+        abilityTrigger = GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
@@ -48,14 +58,16 @@ public class PlayerMovement : MonoBehaviour
     {
         switch (player_state)
         {
+            //Monster is just wandering around
             case PLAYER_STATE.Normal:
 
                 ScareCooldownTimer = Mathf.Max(0, ScareCooldownTimer - 1);
 
-
-
+                KillCooldownTimer = Mathf.Max(0, KillCooldownTimer - 1);
+                
                 break;
 
+            //Monster uses JUMPSCARE, frightening other players
             case PLAYER_STATE.Scare:
 
                 ScareTimer = Mathf.Max(0, ScareTimer - 1);
@@ -66,7 +78,17 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 break;
+            
+            //Monster kills player
+            case PLAYER_STATE.Kill:
 
+                KillTimer = Mathf.Max(0, KillTimer - 1);
+
+                if (KillTimer == 0)
+                {
+                    KillDeactivate();
+                }
+                break;
 
         }
     }
@@ -74,6 +96,11 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         rb.linearVelocity = moveVec;
+    }
+
+    private void SetSprite(Sprite spr)
+    {
+        player_sprite.sprite = spr;
     }
 
     //GetMove(context) gets the players input for movement,
@@ -84,13 +111,21 @@ public class PlayerMovement : MonoBehaviour
         moveVec = (Vector3)context.ReadValue<Vector2>() * PlayerSpeed;
     }//GetMove
 
-    public void GetAttack()
+    public void JumpScare()
     {
         if (player_state == PLAYER_STATE.Normal && ScareCooldownTimer <= 0)
         {
             ScareActivate();
         }
-    }//GetAttack
+    }//JumpScare
+
+    public void Kill()
+    {
+        if (InKillRange || true)
+        {
+            KillActivate();
+        }
+    }
 
     public void updateScareCount()
     {
@@ -103,22 +138,63 @@ public class PlayerMovement : MonoBehaviour
         return (player_state == PLAYER_STATE.Scare);
     }
 
+    public bool PlayerIsKilling()
+    {
+        return (player_state == PLAYER_STATE.Kill);
+    }
+
     private void ScareActivate()
     {
         player_state = PLAYER_STATE.Scare;
         ScareTimer = ScareDuration;
-        player_sprite.sprite = spr_scare;
-        scareTrigger.enabled = true;
+        SetSprite(spr_scare);
+        abilityTrigger.enabled = true;
         Instantiate(shoutShockwave, transform.position, Quaternion.identity);
     }
 
     private void ScareDeactivate()
     {
         player_state = PLAYER_STATE.Normal;
-        player_sprite.sprite = spr_normal;
+        SetSprite(spr_normal);
         ScareCooldownTimer = ScareCooldown;
-        scareTrigger.enabled = false;
+        abilityTrigger.enabled = false;
     }
+
+    private void KillActivate()
+    {
+        player_state = PLAYER_STATE.Kill;
+        SetSprite(spr_kill);
+        KillTimer = KillDuration;
+        abilityTrigger.enabled = true;
+    }
+
+    private void KillDeactivate()
+    {
+        player_state = PLAYER_STATE.Normal;
+        SetSprite(spr_normal);
+        KillCooldownTimer = KillCooldown;
+        abilityTrigger.enabled = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //When the player is close enough to attack
+        if (collision.gameObject.CompareTag("Human"))
+        {
+            InKillRange = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        //When the player is close enough to attack
+        if (collision.gameObject.CompareTag("Human"))
+        {
+            InKillRange = false;
+        }
+    }
+
+    
 
 
 }
