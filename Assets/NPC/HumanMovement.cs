@@ -132,11 +132,6 @@ public class HumanMovement : MonoBehaviour
     {
 
     }
-    private void OnPlayerSpotted()
-    {
-
-    }
-
     private void KillHuman()
     {
         human_state = HUMAN_STATE.Dead;

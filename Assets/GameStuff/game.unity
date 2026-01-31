@@ -755,7 +755,7 @@ MonoBehaviour:
   player: {fileID: 7339757489445899651, guid: 3b0de5559c2bd4d41b00443be3ecc405, type: 3}
   human: {fileID: 4938762742874732869, guid: 1b173d9d71d1b8c49a30b281d28c9826, type: 3}
   scoreTextObject: {fileID: 1650769448}
-  HumanSpawnRate: 100000
+  HumanSpawnRate: 500
   SpawnRange: 2
 --- !u!4 &1869895719
 Transform:
