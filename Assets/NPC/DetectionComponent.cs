@@ -16,7 +16,8 @@ public class DetectionComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("player collided");
+        if (collision.gameObject.tag == "Player")
+            Debug.Log("player collided");
 
     }
 }

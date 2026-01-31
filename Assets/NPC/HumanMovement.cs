@@ -24,12 +24,34 @@ public class HumanMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isSpooked) transform.position += runDirVec * scaredRunSpeed * Time.deltaTime;
     }
 
     private void FixedUpdate()
     {
-        //transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * Random.Range(1, 5) * Time.deltaTime;
+        switch (_state)
+        {
+            case 'i':
+                timer += Time.fixedDeltaTime;
+                if (timer >= idleTime)
+                {
+                    timer = 0f;
+                    _state = 'w';
+                    //Pick a random target position within some radius
+                    float randX = Random.Range(-5f, 5f);
+                    float randY = Random.Range(-5f, 5f);
+                    _targetPosition = new Vector2(transform.position.x + randX, transform.position.y + randY);
+                }
+                break;
+            case 'w':
+                Vector2 movement = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime);
+                _detection.transform.rotation = Quaternion.LookRotation(Vector3.forward, movement - (Vector2)transform.position);
+                transform.position = movement;
+                break;
+            case 's':
+                transform.position += runDirVec * scaredRunSpeed * Time.deltaTime;
+                break;
+
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -52,6 +74,7 @@ public class HumanMovement : MonoBehaviour
                 gameObject.GetComponent<FadeDestroy>().enabled = true;
 
                 isSpooked = true;
+                _state = 's';
             }
         }
     }
@@ -62,5 +85,11 @@ public class HumanMovement : MonoBehaviour
         //{
         //    Destroy(gameObject);
         //}
+    }
+
+    private void move(Vector3 movement)
+    {
+        transform.position += movement * Time.deltaTime;
+
     }
 }
