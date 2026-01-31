@@ -35,6 +35,7 @@ public class HumanMovement : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GetComponentInChildren<DetectionComponent>().PlayerDetected += OnPlayerSpotted;
         human_sprite = GetComponent<SpriteRenderer>();
         flashlightSize = _detection.transform.localScale.x;
     }
@@ -107,9 +108,9 @@ public class HumanMovement : MonoBehaviour
             {
                 player.updateScareCount();
 
-                
-                runDirVec = Vector3.Normalize(transform.position - player.transform.position);
-                gameObject.GetComponent<FadeDestroy>().enabled = true;
+
+            runDirVec = Vector3.Normalize(transform.position - player.transform.position);
+            gameObject.GetComponent<FadeDestroy>().enabled = true;
 
                 isSpooked = true;
                 human_state = HUMAN_STATE.Scared;
@@ -125,6 +126,14 @@ public class HumanMovement : MonoBehaviour
     private void move(Vector3 movement)
     {
         transform.position += movement * Time.deltaTime;
+
+    }
+    private void OnPlayerSpotted()
+    {
+
+    }
+    private void OnPlayerSpotted()
+    {
 
     }
 
