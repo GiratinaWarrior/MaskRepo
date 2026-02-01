@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 using static UnityEngine.UI.Image;
 
 public class DetectionComponent : MonoBehaviour
@@ -16,7 +17,7 @@ public class DetectionComponent : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _layerMask = LayerMask.GetMask("Player");
+        _layerMask = LayerMask.GetMask("Player", "Walls");
     }
 
     // Update is called once per frame
@@ -35,9 +36,11 @@ public class DetectionComponent : MonoBehaviour
             hit = Physics2D.Raycast(transform.position, LOS.position - transform.position, int.MaxValue, _layerMask);
             Debug.DrawRay(transform.position, LOS.position - transform.position, hit ? Color.green : Color.red);
 
-            if (hit.collider != null)
+            if (hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
             {
+  
                 losCurr = true;
+                GetComponentInChildren<Light2D>().color = Color.red;
             }
 
         }
@@ -49,6 +52,7 @@ public class DetectionComponent : MonoBehaviour
         else if (losPrev && !losCurr)
         {
             PlayerLost?.Invoke();
+            GetComponentInChildren<Light2D>().color = Color.white;
         }
 
 
@@ -69,11 +73,6 @@ public class DetectionComponent : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            HumanMovement human = transform.parent.GetComponent<HumanMovement>();
-            if (human.HumanSuspicious()) transform.parent.GetComponent<HumanMovement>().ResetHuman();
-        }
 
         LOS = null;
     }
