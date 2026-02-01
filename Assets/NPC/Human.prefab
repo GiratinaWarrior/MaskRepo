@@ -467,12 +467,15 @@ MonoBehaviour:
   spr_scared: {fileID: 0}
   spr_dead: {fileID: -7149898910241992731, guid: 577b0e6809b4fd544bfd19757d29c3ca, type: 3}
   animator: {fileID: 4748931481177437843}
+  rb: {fileID: 0}
   _targetPosition: {x: 0, y: 0, z: 0}
   _detection: {fileID: 2377796218182790727}
   dead_shriek: {fileID: 0}
   scaredRunSpeed: 5
   gameManager: {fileID: 0}
   AlertDistance: 1
+  maxSus: 20
+  susMeter: 0
 --- !u!61 &641970718486412628
 BoxCollider2D:
   m_ObjectHideFlags: 0

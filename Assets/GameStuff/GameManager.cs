@@ -22,13 +22,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float SpawnRange = 20;
 
     //Variables that store the UI components, the ones after the round ends
-    [SerializeField] private Text killText;
-    [SerializeField] private Text scareText;
+    //[SerializeField] private Text killText;
+    //[SerializeField] private Text scareText;
+    [SerializeField] private Text allScareScore;
     [SerializeField] private Text ratingText;
     [SerializeField] private GameObject ReviewScreen;
     [SerializeField] Light2D globalLight;
 
     [SerializeField] private Text scareScoreText;
+    [SerializeField] private Text reviewScoreText;
 
     public enum GAME 
     {
@@ -57,7 +59,7 @@ public class GameManager : MonoBehaviour
     {
         //scoreTMP = scoreTextObject.GetComponent<TextMeshPro>();
         HumanSpawnTimer = HumanSpawnRate;
-        //SpawnHuman();
+        StartRound();
     }
 
     private void Awake()
@@ -83,9 +85,9 @@ public class GameManager : MonoBehaviour
             case GAME.Active:
 
                 scareScoreText.text =
-                "Spooks: " + myPlayer.approachCount + "\n" +
-                "Scares: " + myPlayer.scareCount + "\n" +
-                "Kills: " + myPlayer.killCount;
+                "Spookiness: " + myPlayer.approachCount + "\n" +
+                "Scariness: " + myPlayer.scareCount + "\n" +
+                "Killiness: " + myPlayer.killCount;
 
                 //SPAWN THE HUMAN
                 HumanSpawnTimer = Mathf.Max(0, HumanSpawnTimer - Time.deltaTime);
@@ -109,6 +111,7 @@ public class GameManager : MonoBehaviour
     //StartRound(), sets up and starts the game
     public void StartRound()
     {
+        scareScoreText.gameObject.SetActive(true);
         ReviewScreen.SetActive(false);
         myPlayer.ResetCount();
         game_state = GAME.Active;
@@ -125,6 +128,7 @@ public class GameManager : MonoBehaviour
     //EndRound(), cleans up and ends the round
     public void EndRound()
     {
+        scareScoreText.gameObject.SetActive(false);
         ReviewScreen.SetActive(true);
         UpdateEndText();
         game_state = GAME.Off;
@@ -150,18 +154,17 @@ public class GameManager : MonoBehaviour
         int scareScore = myPlayer.scareCount * ScareMultiplier;
         int approachScore = myPlayer.approachCount * ApproachMultiplier;
 
-        killText.text = "Kill Count: " + killScore;
-        scareText.text = "Scare Count: " + scareScore;
+        int bonus = 0;
 
-        
-            
-
-
-        //CALCULATE rating using KILL/SCARE counts
+        reviewScoreText.text =
+            "Spookiness: " + approachScore + "\n" +
+            "Scariness: " + scareScore + "\n" +
+            "Killiness: " + killScore + 
+            (bonus == 0 ? "" : "Bonus: " + bonus);
 
         int finalScore = killScore + scareScore + approachScore;
 
-        ratingText.text = "Grade: " + finalScore;
+        ratingText.text = "Scare-o-meter Rating: " + finalScore;
     }
 
     //SpawnHuman() creates an instance of a Human in the world
@@ -169,6 +172,7 @@ public class GameManager : MonoBehaviour
     {
         
         Vector3 offsetVec = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * SpawnRange;
+
         var newHuman = Instantiate(human, transform.position + offsetVec, transform.rotation);
         newHuman.GetComponent<HumanMovement>().gameManager = this;
         humanCount++;

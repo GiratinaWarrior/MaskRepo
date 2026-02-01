@@ -14,6 +14,7 @@ public class HumanMovement : MonoBehaviour
     [SerializeField] private Sprite spr_dead;
 
     [SerializeField] private Animator animator;
+    [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] Vector3 _targetPosition;
     private float timer = 0f;
@@ -50,9 +51,13 @@ public class HumanMovement : MonoBehaviour
     //The distance a human in the 'suspicious' state will notice the player is a monster and run
     [SerializeField] private float AlertDistance = 1;
 
+    public float maxSus = 20;
+    public float susMeter = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         GetComponentInChildren<DetectionComponent>().PlayerDetected += OnPlayerSpotted;
         GetComponentInChildren<DetectionComponent>().PlayerLost += OnPlayerLost;
 
@@ -75,6 +80,8 @@ public class HumanMovement : MonoBehaviour
             //--------------------------IDLE
             case HUMAN_STATE.Idle:
                 timer += Time.fixedDeltaTime;
+
+                susMeter = Mathf.Max(0, susMeter - 1);
 
                 //When the human is done idling, choose a point to travel to and go there
                 if (timer >= idleTime)
@@ -111,6 +118,8 @@ public class HumanMovement : MonoBehaviour
             //--------------------SUSPICIOUS
             case HUMAN_STATE.Suspicious:
 
+                susMeter = Mathf.Min(susMeter + 1, maxSus);
+
                 //Flashlight is kept in the players direction
                 _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(spottedPlayer.position - transform.position));
 
@@ -141,8 +150,8 @@ public class HumanMovement : MonoBehaviour
 
                 break;
         }
-        transform.position += moveVec * Time.deltaTime;
-
+        //transform.position += moveVec * Time.deltaTime;
+        rb.linearVelocity = moveVec;
     }
 
     public void UpdateAnimation()
@@ -215,9 +224,9 @@ public class HumanMovement : MonoBehaviour
             spottedPlayer = player.transform;
 
             //If the player is jumpscaring the human and the human hasn't been jumpscared yet
-            if (player.PlayerIsScary())
+            if (player.PlayerIsScary() && (human_state != HUMAN_STATE.Scared))
             { 
-                if (human_state != HUMAN_STATE.Scared) HumanBecomeScared(player);
+                HumanBecomeScared(player, true, human_state == HUMAN_STATE.Idle);
             }
 
             //If the player is killing the human
@@ -239,10 +248,13 @@ public class HumanMovement : MonoBehaviour
 
     //HumanBecomeScared(player, isJumpScare) tells the player to become scared
     //isJumpScared: Boolean that is true if the player is running because the player jumpscared them, else false
-    public void HumanBecomeScared(PlayerMovement player, bool isJumpScare = true)
+    public void HumanBecomeScared(PlayerMovement player, bool isJumpScare = true, bool surprise = false)
     {
         //update the corresponding score counter
-        if (isJumpScare) player.UpdateScareCount();
+        if (isJumpScare)
+        {
+            player.UpdateScareCount(surprise);
+        }
         else player.UpdateApproachCount();
 
         //Human moves in direction opposite of player

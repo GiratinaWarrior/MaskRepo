@@ -55,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
     //------------Points for the various scares
 
     public int scareCount = 0;
+    public int superScare = 0;
     public int killCount = 0;
     public int approachCount = 0;
 
@@ -235,14 +236,14 @@ public class PlayerMovement : MonoBehaviour
     
     //-------------The following update the various score parameters
     
-    public void UpdateScareCount()
+    public void UpdateScareCount(bool surprise = false)
     {
-        scareCount++;
+        scareCount += (surprise ? 2 : 1);// Mathf.Max(1, Mathf.FloorToInt(susLevel * 3));
     }
 
     public void UpdateKillCount()
     {
-        killCount++;
+        killCount += 1;// Mathf.Max(1, Mathf.FloorToInt(susLevel * 3));
     }
 
     public void UpdateApproachCount()
@@ -330,8 +331,6 @@ public class PlayerMovement : MonoBehaviour
             InKillRange = false;
         }
     }
-
-
 
 
 
