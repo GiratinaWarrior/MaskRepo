@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player_sprite = GetComponent<SpriteRenderer>();
         abilityTrigger = GetComponent<CircleCollider2D>();
-        abilityTrigger.radius = 2;
+        abilityTrigger.radius = 1;
     }
 
     // Update is called once per frame
@@ -277,7 +277,7 @@ public class PlayerMovement : MonoBehaviour
         player_state = PLAYER_STATE.Scare;
         ScareTimer = ScareDuration; 
         abilityTrigger.enabled = true;
-        abilityTrigger.radius = 2;
+        //abilityTrigger.radius = 2;
         Instantiate(shoutShockwave, transform.position, Quaternion.identity);
     }
 
@@ -298,7 +298,7 @@ public class PlayerMovement : MonoBehaviour
             player_state = PLAYER_STATE.Kill;
             KillTimer = KillDuration;
             abilityTrigger.enabled = true;
-            abilityTrigger.radius = 1;
+            //abilityTrigger.radius = 1;
             GameObject killWave = Instantiate(shoutShockwave, transform.position, Quaternion.identity);
             killWave.GetComponent<SpriteRenderer>().color = Color.red;
         }
