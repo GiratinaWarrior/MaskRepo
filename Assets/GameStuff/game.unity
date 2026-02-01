@@ -54651,12 +54651,12 @@ MonoBehaviour:
   - {fileID: 9100000, guid: eabbf86cb88443445a480864aaf0ee16, type: 2}
   HumanSpawnRate: 2
   SpawnRange: 10
-  killText: {fileID: 569654614}
-  scareText: {fileID: 866446115}
+  allScareScore: {fileID: 0}
   ratingText: {fileID: 2007604278}
   ReviewScreen: {fileID: 806353613}
   globalLight: {fileID: 976133750}
   scareScoreText: {fileID: 1155404595}
+  reviewScoreText: {fileID: 0}
   GameActiveDuration: 60
   MaxHumans: 30
 --- !u!4 &1869895719
