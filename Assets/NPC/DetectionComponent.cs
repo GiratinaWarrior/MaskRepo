@@ -5,15 +5,18 @@ using static UnityEngine.UI.Image;
 
 public class DetectionComponent : MonoBehaviour
 {
-    public event Action PlayerDetected;
+    public event Action<Transform> PlayerDetected;
+    public event Action PlayerLost;
 
     private Transform LOS;
+    private bool losPrev = false;
+    private bool losCurr = false;
 
     private LayerMask _layerMask;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _layerMask = Physics.AllLayers;
+        _layerMask = LayerMask.GetMask("Player");
     }
 
     // Update is called once per frame
@@ -23,19 +26,29 @@ public class DetectionComponent : MonoBehaviour
     }
     private void FixedUpdate()
     {
+
+        losCurr = false;
         if (LOS != null)
         {
             RaycastHit2D hit;
             Color rayColor = Color.red;
-            hit = Physics2D.Raycast(transform.position, LOS.position - transform.position, _layerMask);
-            if (hit.transform != null)
-            {
-                rayColor = Color.green;
-                Debug.Log("Player in sight");
-                PlayerDetected.Invoke();
-            }
-            Debug.DrawRay(transform.position, LOS.position - transform.position, rayColor);
+            hit = Physics2D.Raycast(transform.position, LOS.position - transform.position, int.MaxValue, _layerMask);
+            Debug.DrawRay(transform.position, LOS.position - transform.position, hit ? Color.green : Color.red);
+
+            if (hit.collider != null)
+                losCurr = true;
         }
+        if (!losPrev && losCurr)
+        {
+            PlayerDetected?.Invoke(LOS);
+        }
+        else if (losPrev && !losCurr)
+        {
+            PlayerLost?.Invoke();
+        }
+
+
+        losPrev = losCurr;
 
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -43,7 +56,6 @@ public class DetectionComponent : MonoBehaviour
         if (collision.gameObject.tag != "Player")
             return;
             Debug.Log("player collided");
-        PlayerDetected.Invoke();
 
         LOS = collision.transform;
 

@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
+using UnityEditor.Animations;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     public GameObject scoreTextObject;
     private TextMeshPro scoreTMP;
 
+
+    [SerializeField] private AnimatorController[] variations;
     [SerializeField] private int HumanSpawnRate = 80;
     private int HumanSpawnTimer = 0;
 
@@ -42,7 +45,9 @@ public class GameManager : MonoBehaviour
 
     private void SpawnHuman()
     {
+        int choose = Random.Range(0, variations.Length);
         Vector3 offsetVec = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * SpawnRange;
-        Instantiate(human, player.transform.position + offsetVec, transform.rotation);
+        var newHuman = Instantiate(human, player.transform.position + offsetVec, transform.rotation);
+        newHuman.GetComponent<Animator>().runtimeAnimatorController = variations[choose];
     }
 }

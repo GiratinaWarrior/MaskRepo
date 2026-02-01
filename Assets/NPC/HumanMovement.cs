@@ -1,5 +1,7 @@
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.UI.Image;
 
 public class HumanMovement : MonoBehaviour
@@ -10,26 +12,34 @@ public class HumanMovement : MonoBehaviour
     [SerializeField] private Sprite spr_scared;
     [SerializeField] private Sprite spr_dead;
 
-    private Vector2 _targetPosition;
+    [SerializeField] private Animator animator;
+
+    [SerializeField] Vector3 _targetPosition;
     private float timer = 0f;
     private float idleTime = 3f;
+    private bool justTransitioned = true;
 
     enum HUMAN_STATE
     {
         Idle,
         Wander,
         Scared,
+        Suspicious,
         Dead
     }
 
     private HUMAN_STATE human_state = HUMAN_STATE.Idle;
     [SerializeField] GameObject _detection;
+    [SerializeField] GameObject dead_shriek;
+    Transform spottedPlayer;
+
+    Vector3 moveVec = Vector3.zero;
 
     private float flashlightSize = 2;
 
 
     private bool isSpooked = false;
-    public int scaredRunSpeed = 5;
+    public int scaredRunSpeed = 2;
     private Vector3 runDirVec = Vector3.zero;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -38,11 +48,13 @@ public class HumanMovement : MonoBehaviour
         GetComponentInChildren<DetectionComponent>().PlayerDetected += OnPlayerSpotted;
         human_sprite = GetComponent<SpriteRenderer>();
         flashlightSize = _detection.transform.localScale.x;
+        _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(Vector3.left));
     }
 
     // Update is called once per frame
     void Update()
     {
+        UpdateAnimation();
     }
 
     private void FixedUpdate()
@@ -52,6 +64,7 @@ public class HumanMovement : MonoBehaviour
             //Idle
             case HUMAN_STATE.Idle:
                 timer += Time.fixedDeltaTime;
+
                 if (timer >= idleTime)
                 {
                     timer = 0f;
@@ -59,22 +72,36 @@ public class HumanMovement : MonoBehaviour
                     //Pick a random target position within some radius
                     float randX = Random.Range(-5f, 5f);
                     float randY = Random.Range(-5f, 5f);
-                    _targetPosition = new Vector2(transform.position.x + randX, transform.position.y + randY);
+                    _targetPosition = new Vector3(transform.position.x + randX, transform.position.y + randY, 0);
                 }
                 break;
             //Wander
             case HUMAN_STATE.Wander:
-                Vector2 movement = Vector2.MoveTowards(transform.position, _targetPosition, Time.deltaTime);
-                _detection.transform.eulerAngles = new Vector3(0, 0, VectorToAngle((Vector3)_targetPosition - transform.position));
+                moveVec = _targetPosition - transform.position;
+                moveVec.Normalize();
+                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
                 //_detection.transform.rotation = Quaternion.LookRotation((Vector3)_targetPosition - transform.position);
                 //_detection.transform.rotation = Quaternion.LookRotation(Vector3.forward, movement - (Vector2)transform.position);
-                transform.position = movement;
+                Debug.DrawRay(transform.position, _targetPosition - transform.position,Color.green);
+                if (Vector2.Distance(transform.position, _targetPosition) < 1f)
+                {
+                    human_state = HUMAN_STATE.Idle;
+                    timer = 0f;
+                    moveVec = Vector3.zero;
+                }
+                break;
+            case HUMAN_STATE.Suspicious:
+                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(spottedPlayer.position - transform.position));
+                if ((spottedPlayer.position - transform.position).x < 0)
+                {
+                    human_sprite.flipX = true;
+                }
+                else 
+                    human_sprite.flipX = false;
                 break;
             //Scared
             case HUMAN_STATE.Scared:
-                transform.position += scaredRunSpeed * Time.deltaTime * runDirVec;
-
-                _detection.transform.eulerAngles = new Vector3(0, 0, VectorToAngle(runDirVec));
+                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
                 break;
 
             case HUMAN_STATE.Dead:
@@ -83,14 +110,51 @@ public class HumanMovement : MonoBehaviour
 
                 break;
         }
+        transform.position += moveVec * Time.deltaTime;
 
-        if (runDirVec.x != 0)
+    }
+
+    public void UpdateAnimation()
+    {
+
+        switch (human_state)
         {
-            int sign = runDirVec.x > 0 ? 1 : -1;
-            gameObject.GetComponent<SpriteRenderer>().flipX = (sign == 1);
-            //flashlight.transform.localScale = new Vector3(sign, 1, 1) * flashlightSize;
+            case HUMAN_STATE.Idle:
+                PlayAnimation("Idle");
+                break;
+            case HUMAN_STATE.Wander:
+                PlayAnimation("Walk");
+                break;
+            case HUMAN_STATE.Scared:
+                float humanAngle = Mathf.Atan2(transform.position.y - spottedPlayer.position.y, transform.position.x - spottedPlayer.position.x);
+                if (humanAngle <= Mathf.PI / 4f && humanAngle >= Mathf.PI / -4f || (humanAngle >= Mathf.PI * 3f / 4f || humanAngle <= Mathf.PI * -3f / 4f))
+                    PlayAnimation("Scared");
+                else if (humanAngle >= Mathf.PI / 4f && humanAngle <= Mathf.PI * 3f / 4f)
+                    PlayAnimation("Scared_Up");
+                else if (humanAngle >= Mathf.PI * -3f / 4f && humanAngle <= Mathf.PI / -4f)
+                    PlayAnimation("Scared_Down");
+                break;
+            case HUMAN_STATE.Suspicious:
+                PlayAnimation("Idle");
+                break;
+            case HUMAN_STATE.Dead:
+                PlayAnimation("Dead");
+                break;
         }
-        
+        if (moveVec.x < 0)
+        {
+            human_sprite.flipX = true;
+        }
+        else if (moveVec.x > 0)
+        {
+            human_sprite.flipX = false;
+        }
+    }
+
+        public void PlayAnimation(string animName)
+    {
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
+            animator.Play(animName, 0, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -104,12 +168,13 @@ public class HumanMovement : MonoBehaviour
            
             //HUMAN RUNS AWAY OR SOMETHING
             //****TO DO****
+            spottedPlayer = player.transform;
             if (player.PlayerIsScary() && !isSpooked)
             {
                 player.updateScareCount();
 
 
-            runDirVec = Vector3.Normalize(transform.position - player.transform.position);
+            moveVec = Vector3.Normalize(transform.position - player.transform.position)*scaredRunSpeed;
             gameObject.GetComponent<FadeDestroy>().enabled = true;
 
                 isSpooked = true;
@@ -122,16 +187,14 @@ public class HumanMovement : MonoBehaviour
         }
     }
 
-
-    private void move(Vector3 movement)
+    private void OnPlayerSpotted(Transform player)
     {
-        transform.position += movement * Time.deltaTime;
-
+        spottedPlayer = player;
+        Debug.Log("Player spotted by human " + player.gameObject.name);
+        if (human_state != HUMAN_STATE.Scared)
+            human_state = HUMAN_STATE.Suspicious;
     }
-    private void OnPlayerSpotted()
-    {
 
-    }
     private void KillHuman()
     {
         human_state = HUMAN_STATE.Dead;
@@ -143,6 +206,7 @@ public class HumanMovement : MonoBehaviour
     {
         human_sprite.sprite = spr;
     }
+
     //VectorToAngle(vec) takes a vector vec and returns the angle formed by the x and y coordinates relative to the origin
     //Vector3 -> Float
     private float VectorToAngle(Vector3 vec)
