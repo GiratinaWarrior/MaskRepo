@@ -30,6 +30,10 @@ public class CameraMovement : MonoBehaviour
             }
             transform.position = new Vector3(transform.position.x, transform.position.y, cameraZ);
         }
+        else
+        {
+            player = GameObject.FindWithTag("Player");
+        }
 
     }
 }

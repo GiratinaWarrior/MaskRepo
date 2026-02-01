@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text scareScoreText;
     [SerializeField] private Text reviewScoreText;
 
+    
+
     public enum GAME 
     {
         Off, //Player is given time to chill out
@@ -49,24 +51,48 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int MaxHumans = 10;
     private int humanCount = 0;
 
+    public int StartHumanSummon = 30;
+
     //Score multipliers for the different scare methods
     public const int ScareMultiplier = 2;
     public const int KillMultiplier = 5;
     public const int ApproachMultiplier = 1;
+
+    [SerializeField] private Transform spawnPlayerParent;
+    [SerializeField] private Transform spawnHumanParent;
+
+    private Transform[] allPlayerSpawnpoints;
+    private Transform[] allHumanSpawnpoints;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //scoreTMP = scoreTextObject.GetComponent<TextMeshPro>();
         HumanSpawnTimer = HumanSpawnRate;
+        
+        allHumanSpawnpoints = spawnHumanParent.GetComponentsInChildren<Transform>();
+        allPlayerSpawnpoints = spawnPlayerParent.GetComponentsInChildren<Transform>();
+
+        Transform chosenSpawnpoint = allPlayerSpawnpoints[Mathf.FloorToInt(Random.Range(0, allPlayerSpawnpoints.Length - 1))];
+
+        chosenSpawnpoint.position = new Vector3(chosenSpawnpoint.position.x, chosenSpawnpoint.position.y, -5);
+
+        myPlayer = Instantiate(player, chosenSpawnpoint.position, transform.rotation).GetComponent<PlayerMovement>();
+        myPlayer.gameManager = this;
+
+        chosenSpawnpoint.gameObject.SetActive(false);
+
         StartRound();
+
+
     }
 
     private void Awake()
     {
         //Immediately spawn the player upon game start
-        myPlayer = Instantiate(player, new Vector3(0, 0, 0), transform.rotation).GetComponent<PlayerMovement>();
-        myPlayer.gameManager = this;
+         
+        
+        
     }
 
     // Update is called once per frame
@@ -118,7 +144,7 @@ public class GameManager : MonoBehaviour
         GameActiveTimer = 0;
         globalLight.intensity = 0.1f;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < StartHumanSummon; i++)
         {
             SpawnHuman();
         }
@@ -173,9 +199,12 @@ public class GameManager : MonoBehaviour
         
         Vector3 offsetVec = new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), 0) * SpawnRange;
 
-        var newHuman = Instantiate(human, transform.position + offsetVec, transform.rotation);
-        newHuman.GetComponent<HumanMovement>().gameManager = this;
-        humanCount++;
+        Transform chosenSpawnpoint = allHumanSpawnpoints[Mathf.FloorToInt(Random.Range(0, allHumanSpawnpoints.Length))];
+
+        chosenSpawnpoint.position = new Vector3(chosenSpawnpoint.position.x, chosenSpawnpoint.position.y, -5);
+
+        var newHuman = Instantiate(human, chosenSpawnpoint.position, transform.rotation);
+        newHuman.GetComponent<HumanMovement>().gameManager = this; 
 
         //Sprite
         int choose = Random.Range(0, variations.Length);

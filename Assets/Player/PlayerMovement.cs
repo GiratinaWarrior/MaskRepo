@@ -69,6 +69,8 @@ public class PlayerMovement : MonoBehaviour
 
     private PLAYER_STATE player_state = PLAYER_STATE.Normal;
 
+    [SerializeField] private AudioClip killSoundClip;
+    private AudioSource killAudioSource;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -77,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
         player_sprite = GetComponent<SpriteRenderer>();
         abilityTrigger = GetComponent<CircleCollider2D>();
         abilityTrigger.radius = 1;
+        killAudioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -301,6 +304,10 @@ public class PlayerMovement : MonoBehaviour
             //abilityTrigger.radius = 1;
             GameObject killWave = Instantiate(shoutShockwave, transform.position, Quaternion.identity);
             killWave.GetComponent<SpriteRenderer>().color = Color.red;
+
+            //killAudioSource.clip = killSoundClip;
+            killAudioSource.Play();
+            
         }
     }
 
