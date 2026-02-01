@@ -6,6 +6,7 @@ using static UnityEngine.UI.Image;
 
 public class HumanMovement : MonoBehaviour
 {
+    //All the sprites of the human
     [SerializeField] private SpriteRenderer human_sprite;
     [SerializeField] private Sprite spr_idle;
     [SerializeField] private Sprite spr_wander;
@@ -17,15 +18,18 @@ public class HumanMovement : MonoBehaviour
     [SerializeField] Vector3 _targetPosition;
     private float timer = 0f;
     private float idleTime = 3f;
-    private bool justTransitioned = true;
+    //private bool justTransitioned = true;
 
+    
+
+    //State machine for the humans different behaviours
     enum HUMAN_STATE
     {
-        Idle,
-        Wander,
-        Scared,
-        Suspicious,
-        Dead
+        Idle, //Human stands in one spot
+        Wander, //Human wanders around
+        Scared, //Human runs in fear of their lives
+        Suspicious, //Humans freezes in fear as they notice something
+        Dead //Human becomes a corpse that does nothing
     }
 
     private HUMAN_STATE human_state = HUMAN_STATE.Idle;
@@ -36,11 +40,15 @@ public class HumanMovement : MonoBehaviour
     Vector3 moveVec = Vector3.zero;
 
     private float flashlightSize = 2;
-
-
+    
     private bool isSpooked = false;
     public int scaredRunSpeed = 2;
     private Vector3 runDirVec = Vector3.zero;
+
+    public GameManager gameManager;
+
+    //The distance a human in the 'suspicious' state will notice the player is a monster and run
+    [SerializeField] private float AlertDistance = 1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,12 +67,14 @@ public class HumanMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //-----------------------------HUMAN STATE MACHINE--------------------//
         switch (human_state)
         {
-            //Idle
+            //--------------------------IDLE
             case HUMAN_STATE.Idle:
                 timer += Time.fixedDeltaTime;
 
+                //When the human is done idling, choose a point to travel to and go there
                 if (timer >= idleTime)
                 {
                     timer = 0f;
@@ -75,38 +85,59 @@ public class HumanMovement : MonoBehaviour
                     _targetPosition = new Vector3(transform.position.x + randX, transform.position.y + randY, 0);
                 }
                 break;
-            //Wander
+
+            //------------------------WANDER
             case HUMAN_STATE.Wander:
+
+                //Human moves towards the target destination
                 moveVec = _targetPosition - transform.position;
                 moveVec.Normalize();
+
+                //Humans flashlight shines in the direction they travel in
                 _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
-                //_detection.transform.rotation = Quaternion.LookRotation((Vector3)_targetPosition - transform.position);
-                //_detection.transform.rotation = Quaternion.LookRotation(Vector3.forward, movement - (Vector2)transform.position);
+
                 Debug.DrawRay(transform.position, _targetPosition - transform.position,Color.green);
+
+                //Human goes back to idling once they are close enough to their destination
                 if (Vector2.Distance(transform.position, _targetPosition) < 1f)
                 {
                     human_state = HUMAN_STATE.Idle;
                     timer = 0f;
                     moveVec = Vector3.zero;
                 }
+
                 break;
+
+            //--------------------SUSPICIOUS
             case HUMAN_STATE.Suspicious:
+
+                //Flashlight is kept in the players direction
                 _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(spottedPlayer.position - transform.position));
-                if ((spottedPlayer.position - transform.position).x < 0)
+
+                //The distance the player currently is from the human
+                float DistFromPlayer = Vector3.Distance(transform.position, spottedPlayer.position);
+
+                //If the player is close enough for the human to notice, they run away scared
+                if (DistFromPlayer <= AlertDistance)
                 {
-                    human_sprite.flipX = true;
+                    HumanBecomeScared(spottedPlayer.gameObject.GetComponent<PlayerMovement>(), false);
                 }
-                else 
-                    human_sprite.flipX = false;
+
+                //Flip the players sprite
+                if ((spottedPlayer.position - transform.position).x < 0) human_sprite.flipX = true; 
+                else human_sprite.flipX = false;
+
                 break;
-            //Scared
+            //---------------------SCARED
             case HUMAN_STATE.Scared:
+                //flash is placed in the direction of running
                 _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
                 break;
 
+            //---------------------DEAD
             case HUMAN_STATE.Dead:
-
-                
+                //Player cannot move while dead
+                moveVec = Vector3.zero;
 
                 break;
         }
@@ -151,55 +182,89 @@ public class HumanMovement : MonoBehaviour
         }
     }
 
-        public void PlayAnimation(string animName)
+    public bool HumanAlive()
+    {
+        return human_state != HUMAN_STATE.Dead;
+    }
+
+    public bool HumanScared()
+    {
+        return human_state == HUMAN_STATE.Scared;
+    }
+
+    public bool HumanSuspicious()
+    {
+        return human_state == HUMAN_STATE.Suspicious;
+    }
+
+    public void PlayAnimation(string animName)
     {
         if (!animator.GetCurrentAnimatorStateInfo(0).IsName(animName))
             animator.Play(animName, 0, 0f);
     }
 
+    //OnTriggerEnter2D(collision) will be called when the player
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //If this human collides with the player
-        if (collision.gameObject.CompareTag("Player"))
+        if (human_state != HUMAN_STATE.Dead && collision.gameObject.CompareTag("Player"))
         {
             PlayerMovement player = collision.gameObject.GetComponent<PlayerMovement>();
 
-            //Debug.Log("Human Scary touched");
-           
-            //HUMAN RUNS AWAY OR SOMETHING
-            //****TO DO****
+             
             spottedPlayer = player.transform;
-            if (player.PlayerIsScary() && !isSpooked)
-            {
-                player.updateScareCount();
 
-
-            moveVec = Vector3.Normalize(transform.position - player.transform.position)*scaredRunSpeed;
-            gameObject.GetComponent<FadeDestroy>().enabled = true;
-
-                isSpooked = true;
-                human_state = HUMAN_STATE.Scared;
+            //If the player is jumpscaring the human and the human hasn't been jumpscared yet
+            if (player.PlayerIsScary())
+            { 
+                if (human_state != HUMAN_STATE.Scared) HumanBecomeScared(player);
             }
+
+            //If the player is killing the human
             else if (player.PlayerIsKilling())
             {
                 KillHuman();
+                player.UpdateKillCount();
             }
         }
+    }
+
+    //HumanBecomeScared(player, isJumpScare) tells the player to become scared
+    //isJumpScared: Boolean that is true if the player is running because the player jumpscared them, else false
+    public void HumanBecomeScared(PlayerMovement player, bool isJumpScare = true)
+    {
+        //update the corresponding score counter
+        if (isJumpScare) player.UpdateScareCount();
+        else player.UpdateApproachCount();
+
+        //Human moves in direction opposite of player
+        moveVec = Vector3.Normalize(transform.position - player.transform.position) * scaredRunSpeed;
+        gameObject.GetComponent<FadeDestroy>().enabled = true;
+
+        isSpooked = true;
+        human_state = HUMAN_STATE.Scared;
     }
 
     private void OnPlayerSpotted(Transform player)
     {
         spottedPlayer = player;
-        Debug.Log("Player spotted by human " + player.gameObject.name);
-        if (human_state != HUMAN_STATE.Scared)
-            human_state = HUMAN_STATE.Suspicious;
+        //Debug.Log("Player spotted by human " + player.gameObject.name);
+        if (human_state != HUMAN_STATE.Scared) human_state = HUMAN_STATE.Suspicious;
     }
 
+    //KillHuman() sets the human into the dead state, they become inert and the flashlight goes out
     private void KillHuman()
     {
+        moveVec = Vector3.zero;
         human_state = HUMAN_STATE.Dead;
         _detection.SetActive(false);
-        SetSprite(spr_dead);
+        //SetSprite(spr_dead);
+    }
+
+    //ResetHuman()
+    public void ResetHuman()
+    {
+        human_state = HUMAN_STATE.Idle;
     }
 
     private void SetSprite(Sprite spr)

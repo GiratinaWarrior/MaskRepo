@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+   
+    
 
     //Components
     [SerializeField] private Rigidbody2D rb;
@@ -11,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Animator animator;
 
     [SerializeField] private GameObject shoutShockwave;
+    public GameManager gameManager;
+    
 
     [SerializeField] private int PlayerSpeed = 10;
     private float currSpeed = 10;
@@ -29,25 +33,30 @@ public class PlayerMovement : MonoBehaviour
 
     private FACING_DIR facingDir = FACING_DIR.Down;
 
-    [SerializeField] private int ScareDuration = 60;
-    private int ScareTimer = 0;
+    //---------------Parameters for the Abilities
 
-    [SerializeField] private int ScareCooldown = 60;
-    private int ScareCooldownTimer = 0;
+    [SerializeField] private float ScareDuration = 60;
+    private float ScareTimer = 0;
 
-    [SerializeField] private int KillDuration = 30;
-    private int KillTimer = 0;
+    [SerializeField] private float ScareCooldown = 60;
+    private float ScareCooldownTimer = 0;
 
-    [SerializeField] private int KillCooldown = 40;
-    private int KillCooldownTimer = 0;
+    [SerializeField] private float KillDuration = 30;
+    private float KillTimer = 0;
 
-    private float killChargeTime = 1.5f;
+    [SerializeField] private float KillCooldown = 80;
+    private float KillCooldownTimer = 0;
+
+    //private float killChargeTime = 1.5f;
     private float chargeTimer = 0f;
 
-    public int score = 0;
-    private int scareCount = 0;
-
     private bool InKillRange = false;
+
+    //------------Points for the various scares
+
+    public int scareCount = 0;
+    public int killCount = 0;
+    public int approachCount = 0;
 
     enum PLAYER_STATE
     {
@@ -66,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         player_sprite = GetComponent<SpriteRenderer>();
         abilityTrigger = GetComponent<CircleCollider2D>();
+        abilityTrigger.radius = 2;
     }
 
     // Update is called once per frame
@@ -77,16 +87,19 @@ public class PlayerMovement : MonoBehaviour
         {
             //Monster is just wandering around
             case PLAYER_STATE.Normal:
-                ScareCooldownTimer = Mathf.Max(0, ScareCooldownTimer - 1);
 
-                KillCooldownTimer = Mathf.Max(0, KillCooldownTimer - 1);
+                //-------Update the cooldown timers for the abilities
+
+                ScareCooldownTimer = Mathf.Max(0, ScareCooldownTimer - Time.deltaTime);
+
+                KillCooldownTimer = Mathf.Max(0, KillCooldownTimer - Time.deltaTime);
                 
                 break;
 
             //Monster uses JUMPSCARE, frightening other players
             case PLAYER_STATE.Scare:
 
-                ScareTimer = Mathf.Max(0, ScareTimer - 1);
+                ScareTimer = Mathf.Max(0, ScareTimer - Time.deltaTime);
 
                 if (ScareTimer == 0)
                 {
@@ -103,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case PLAYER_STATE.Kill:
 
-                KillTimer = Mathf.Max(0, KillTimer - 1);
+                KillTimer = Mathf.Max(0, KillTimer - Time.deltaTime);
 
                 if (KillTimer == 0)
                 {
@@ -129,7 +142,8 @@ public class PlayerMovement : MonoBehaviour
     //the player will change directions based on the given input
     public void GetMove(InputAction.CallbackContext context)
     {
-        moveVec = (Vector3)context.ReadValue<Vector2>() * PlayerSpeed;
+        if (gameManager.GameActive()) moveVec = (Vector3)context.ReadValue<Vector2>() * PlayerSpeed;
+        else moveVec = Vector3.zero;
     }//GetMove
 
     private void UpdateMovementAnimation()
@@ -199,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
 
             case PLAYER_STATE.Kill:
-                PlayAnimation("Kill");
+                //PlayAnimation("Kill");
                 break;
         }
     }
@@ -210,28 +224,39 @@ public class PlayerMovement : MonoBehaviour
                 animator.Play(animName, 0, 0f);
     }
 
-
+    //JumpScare() is called upon pressing the jumpscare button, and checks the necessary conditions for scaring
     public void JumpScare()
     {
-        if (player_state == PLAYER_STATE.Normal && ScareCooldownTimer <= 0)
+        if (gameManager.GameActive() && player_state == PLAYER_STATE.Normal && ScareCooldownTimer <= 0)
         {
             ScareActivate();
         }
     }//JumpScare
-
-    public void Kill()
-    {
-        if (InKillRange || true)
-        {
-            KillActivate();
-        }
-    }
-
-    public void updateScareCount()
+    
+    //-------------The following update the various score parameters
+    
+    public void UpdateScareCount()
     {
         scareCount++;
-        //scoreText.text = "Scare Count: " + scareCount;
     }
+
+    public void UpdateKillCount()
+    {
+        killCount++;
+    }
+
+    public void UpdateApproachCount()
+    {
+        approachCount++;
+    }
+
+    public void ResetCount()
+    {
+        scareCount = 0;
+        killCount = 0;
+    }
+
+    //-----------The following functions check the current state of the Player
 
     public bool PlayerIsScary()
     {
@@ -243,15 +268,19 @@ public class PlayerMovement : MonoBehaviour
         return (player_state == PLAYER_STATE.Kill);
     }
 
+    //---------------The following activate the Players abilities
+
+    //ScareActivate() starts the players jumpscare
     private void ScareActivate()
     {
         player_state = PLAYER_STATE.Scare;
-        ScareTimer = ScareDuration;
-        //SetSprite(spr_scare);
+        ScareTimer = ScareDuration; 
         abilityTrigger.enabled = true;
+        abilityTrigger.radius = 2;
         Instantiate(shoutShockwave, transform.position, Quaternion.identity);
     }
 
+    //ScareDeactivate() ends the players jumpscare
     private void ScareDeactivate()
     {
         player_state = PLAYER_STATE.Normal;
@@ -260,14 +289,21 @@ public class PlayerMovement : MonoBehaviour
         abilityTrigger.enabled = false;
     }
 
-    private void KillActivate()
+    //KillActivate() starts the players killing strike
+    public void KillActivate()
     {
-        player_state = PLAYER_STATE.Kill;
-        //SetSprite(spr_kill);
-        KillTimer = KillDuration;
-        abilityTrigger.enabled = true;
+        if (InKillRange)
+        {
+            player_state = PLAYER_STATE.Kill;
+            KillTimer = KillDuration;
+            abilityTrigger.enabled = true;
+            abilityTrigger.radius = 1;
+            GameObject killWave = Instantiate(shoutShockwave, transform.position, Quaternion.identity);
+            killWave.GetComponent<SpriteRenderer>().color = Color.red;
+        }
     }
 
+    //KillActivate() ends the players killing strike
     private void KillDeactivate()
     {
         player_state = PLAYER_STATE.Normal;
@@ -276,7 +312,8 @@ public class PlayerMovement : MonoBehaviour
         abilityTrigger.enabled = false;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         //When the player is close enough to attack
         if (collision.gameObject.CompareTag("Human"))
@@ -285,16 +322,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        //When the player is close enough to attack
         if (collision.gameObject.CompareTag("Human"))
         {
             InKillRange = false;
         }
     }
 
-    
+
+
 
 
 }

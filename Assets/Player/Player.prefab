@@ -194,7 +194,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6065297577066866409}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: Kill
+        m_MethodName: KillActivate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -228,12 +228,15 @@ MonoBehaviour:
   abilityTrigger: {fileID: 0}
   animator: {fileID: 3398404206677322086}
   shoutShockwave: {fileID: 8725745748364352659, guid: 4b516b29257a8f44587958742e1297fb, type: 3}
+  gameManager: {fileID: 0}
   PlayerSpeed: 5
-  ScareDuration: 30
-  ScareCooldown: 60
-  KillDuration: 30
-  KillCooldown: 40
-  score: 0
+  ScareDuration: 1
+  ScareCooldown: 1
+  KillDuration: 0.3
+  KillCooldown: 5
+  scareCount: 0
+  killCount: 0
+  approachCount: 0
 --- !u!50 &-884295160256619875
 Rigidbody2D:
   serializedVersion: 5
@@ -342,7 +345,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1
+  m_Radius: 2
 --- !u!95 &3398404206677322086
 Animator:
   serializedVersion: 7
