@@ -17,11 +17,15 @@ public class HumanMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] Vector3 _targetPosition;
+    [SerializeField] private float detectionTurnSpeed = 480;
     private float timer = 0f;
     private float idleTime = 3f;
+    private bool stuck = false;
+    private float stuckTime = 0.1f;
+    private float stuckTimer = 0f;
     //private bool justTransitioned = true;
 
-    
+
 
     //State machine for the humans different behaviours
     enum HUMAN_STATE
@@ -97,13 +101,28 @@ public class HumanMovement : MonoBehaviour
 
             //------------------------WANDER
             case HUMAN_STATE.Wander:
+                if (stuck)
+                {
+                    stuckTimer += Time.deltaTime;
+                    if (stuckTimer >= stuckTime)
+                    {
+                        //Pick a new random target position within some radius
+                        float randX = Random.Range(-5f, 5f);
+                        float randY = Random.Range(-5f, 5f);
+                        _targetPosition = new Vector3(transform.position.x + randX, transform.position.y + randY, 0);
+                        stuck = false;
+                        stuckTimer = 0f;
+                        Debug.Log("stuck detected, new target chosen");
+                    }
+                }
 
-                //Human moves towards the target destination
-                moveVec = _targetPosition - transform.position;
+                    //Human moves towards the target destination
+                    moveVec = _targetPosition - transform.position;
                 moveVec.Normalize();
 
                 //Humans flashlight shines in the direction they travel in
-                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
+                RotateDetectionTowards(moveVec);
+                Debug.DrawRay(transform.position, _targetPosition * 5f, Color.green);
 
                 //Human goes back to idling once they are close enough to their destination
                 if (Vector2.Distance(transform.position, _targetPosition) < 1f)
@@ -121,7 +140,7 @@ public class HumanMovement : MonoBehaviour
                 susMeter = Mathf.Min(susMeter + 1, maxSus);
 
                 //Flashlight is kept in the players direction
-                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(spottedPlayer.position - transform.position));
+                RotateDetectionTowards(spottedPlayer.position - transform.position);
 
                 //The distance the player currently is from the human
                 float DistFromPlayer = Vector3.Distance(transform.position, spottedPlayer.position);
@@ -140,7 +159,7 @@ public class HumanMovement : MonoBehaviour
             //---------------------SCARED
             case HUMAN_STATE.Scared:
                 //flash is placed in the direction of running
-                _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
+                RotateDetectionTowards(moveVec);
                 break;
 
             //---------------------DEAD
@@ -245,6 +264,16 @@ public class HumanMovement : MonoBehaviour
 
         }
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        stuck = true;
+        stuckTimer = 0f;
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        stuck = false;
+        stuckTimer = 0f;
+    }
 
     //HumanBecomeScared(player, isJumpScare) tells the player to become scared
     //isJumpScared: Boolean that is true if the player is running because the player jumpscared them, else false
@@ -305,5 +334,21 @@ public class HumanMovement : MonoBehaviour
     {
         float Angle = rotateAng * Mathf.Deg2Rad;
         return new(vec.x * Mathf.Cos(Angle) + vec.y * Mathf.Sin(Angle), vec.x * -Mathf.Sin(Angle) + vec.y * Mathf.Cos(Angle));
+    }
+
+    private void RotateDetectionTowards(Vector3 direction)
+    {
+        if (direction == Vector3.zero) return;
+
+        float targetAngle = VectorToAngle(direction);
+        float currentAngle = _detection.transform.localEulerAngles.z;
+
+        float newAngle = Mathf.MoveTowardsAngle(
+            currentAngle,
+            targetAngle,
+            detectionTurnSpeed * Time.deltaTime
+        );
+
+        _detection.transform.localEulerAngles = new Vector3(0, 0, newAngle);
     }
 }

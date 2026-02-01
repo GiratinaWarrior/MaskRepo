@@ -1,37 +1,43 @@
 fileFormatVersion: 2
-guid: d970d18b3917576459bb4c21c3846d0b
+guid: 8c654533854377d48868d7d971a989f6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4779902224059182699
-    second: Maskaboo_Scare_1_0
+      213: 6733496547200381865
+    second: Maskaboo_Kill_0
   - first:
-      213: 1279677446668357669
-    second: Maskaboo_Scare_1_1
+      213: 606933115221447774
+    second: Maskaboo_Kill_1
   - first:
-      213: -6425673807023191785
-    second: Maskaboo_Scare_1_2
+      213: -3142075918913242612
+    second: Maskaboo_Kill_2
   - first:
-      213: 4014972887891146894
-    second: Maskaboo_Scare_1_3
+      213: 8245793447784900557
+    second: Maskaboo_Kill_3
   - first:
-      213: 9155055400392713572
-    second: Maskaboo_Scare_1_4
+      213: -8312177389498862421
+    second: Maskaboo_Kill_4
   - first:
-      213: 1817966822130774131
-    second: Maskaboo_Scare_1_5
+      213: -2244132337525660047
+    second: Maskaboo_Kill_5
   - first:
-      213: -4906661753224849648
-    second: Maskaboo_Scare_1_6
+      213: -7049563310112152635
+    second: Maskaboo_Kill_6
   - first:
-      213: -7622437325617181516
-    second: Maskaboo_Scare_1_7
+      213: -4285191017889063688
+    second: Maskaboo_Kill_7
   - first:
-      213: 899677681654746300
-    second: Maskaboo_Scare_1_8
+      213: -198133714822556913
+    second: Maskaboo_Kill_8
   - first:
-      213: 1818075787937115024
-    second: Maskaboo_Scare_1_9
+      213: -8260290933409713253
+    second: Maskaboo_Kill_9
+  - first:
+      213: -6407223270722184570
+    second: Maskaboo_Kill_10
+  - first:
+      213: 3295826702686353112
+    second: Maskaboo_Kill_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -127,7 +133,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_0
+      name: Maskaboo_Kill_0
       rect:
         serializedVersion: 2
         x: 0
@@ -142,14 +148,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5915ad190406aadb0800000000000000
-      internalID: -4779902224059182699
+      spriteID: 9a3b2302f6f227d50800000000000000
+      internalID: 6733496547200381865
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_1
+      name: Maskaboo_Kill_1
       rect:
         serializedVersion: 2
         x: 128
@@ -164,14 +170,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5201fb39bd352c110800000000000000
-      internalID: 1279677446668357669
+      spriteID: e54123fd3724c6800800000000000000
+      internalID: 606933115221447774
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_2
+      name: Maskaboo_Kill_2
       rect:
         serializedVersion: 2
         x: 256
@@ -186,14 +192,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 719c9d997bb63d6a0800000000000000
-      internalID: -6425673807023191785
+      spriteID: c0afdd3699a1564d0800000000000000
+      internalID: -3142075918913242612
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_3
+      name: Maskaboo_Kill_3
       rect:
         serializedVersion: 2
         x: 384
@@ -208,14 +214,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e88739db19c08b730800000000000000
-      internalID: 4014972887891146894
+      spriteID: dc76672e371fe6270800000000000000
+      internalID: 8245793447784900557
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_4
+      name: Maskaboo_Kill_4
       rect:
         serializedVersion: 2
         x: 0
@@ -230,14 +236,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 465ed6f816a4d0f70800000000000000
-      internalID: 9155055400392713572
+      spriteID: ba4f2ec34b635ac80800000000000000
+      internalID: -8312177389498862421
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_5
+      name: Maskaboo_Kill_5
       rect:
         serializedVersion: 2
         x: 128
@@ -252,14 +258,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 370fc865137ba3910800000000000000
-      internalID: 1817966822130774131
+      spriteID: 176e0d8678d3bd0e0800000000000000
+      internalID: -2244132337525660047
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_6
+      name: Maskaboo_Kill_6
       rect:
         serializedVersion: 2
         x: 256
@@ -274,14 +280,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 017990ec12908ebb0800000000000000
-      internalID: -4906661753224849648
+      spriteID: 5c36327058bea2e90800000000000000
+      internalID: -7049563310112152635
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_7
+      name: Maskaboo_Kill_7
       rect:
         serializedVersion: 2
         x: 384
@@ -296,14 +302,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4bcc8e343a9a73690800000000000000
-      internalID: -7622437325617181516
+      spriteID: 8fc17002971f784c0800000000000000
+      internalID: -4285191017889063688
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_8
+      name: Maskaboo_Kill_8
       rect:
         serializedVersion: 2
         x: 0
@@ -318,14 +324,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cbcc063b51c4c7c00800000000000000
-      internalID: 899677681654746300
+      spriteID: f0319f5af66104df0800000000000000
+      internalID: -198133714822556913
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_9
+      name: Maskaboo_Kill_9
       rect:
         serializedVersion: 2
         x: 128
@@ -340,14 +346,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 09beabaeb4a1b3910800000000000000
-      internalID: 1818075787937115024
+      spriteID: b93fbb4392d8d5d80800000000000000
+      internalID: -8260290933409713253
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_10
+      name: Maskaboo_Kill_10
       rect:
         serializedVersion: 2
         x: 256
@@ -360,16 +366,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 5c6ea736cb1021446955f0663251daf7
-      internalID: -1547779744
+      spriteID: 68adcf7d168f417a0800000000000000
+      internalID: -6407223270722184570
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Maskaboo_Scare_1_11
+      name: Maskaboo_Kill_11
       rect:
         serializedVersion: 2
         x: 384
@@ -382,10 +388,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: a838c43970691a146b0df152fad4b334
-      internalID: 218950436
+      spriteID: 8d6fdde8ce02dbd20800000000000000
+      internalID: 3295826702686353112
       vertices: []
       indices: 
       edges: []
@@ -394,7 +400,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 40364cb4b6fd0594eb343b0dbdea5db1
+    spriteID: e5a5b61461dd3c84aabefb512b2250b7
     internalID: 0
     vertices: []
     indices: 
@@ -406,18 +412,18 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":128.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Maskaboo_Scare_1_0: -4779902224059182699
-      Maskaboo_Scare_1_1: 1279677446668357669
-      Maskaboo_Scare_1_10: -1547779744
-      Maskaboo_Scare_1_11: 218950436
-      Maskaboo_Scare_1_2: -6425673807023191785
-      Maskaboo_Scare_1_3: 4014972887891146894
-      Maskaboo_Scare_1_4: 9155055400392713572
-      Maskaboo_Scare_1_5: 1817966822130774131
-      Maskaboo_Scare_1_6: -4906661753224849648
-      Maskaboo_Scare_1_7: -7622437325617181516
-      Maskaboo_Scare_1_8: 899677681654746300
-      Maskaboo_Scare_1_9: 1818075787937115024
+      Maskaboo_Kill_0: 6733496547200381865
+      Maskaboo_Kill_1: 606933115221447774
+      Maskaboo_Kill_10: -6407223270722184570
+      Maskaboo_Kill_11: 3295826702686353112
+      Maskaboo_Kill_2: -3142075918913242612
+      Maskaboo_Kill_3: 8245793447784900557
+      Maskaboo_Kill_4: -8312177389498862421
+      Maskaboo_Kill_5: -2244132337525660047
+      Maskaboo_Kill_6: -7049563310112152635
+      Maskaboo_Kill_7: -4285191017889063688
+      Maskaboo_Kill_8: -198133714822556913
+      Maskaboo_Kill_9: -8260290933409713253
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

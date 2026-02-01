@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1473779404784673957}
   - component: {fileID: 4759221277021343900}
   - component: {fileID: 8810112061353946092}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Detector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1515771037593455629}
   - component: {fileID: 2129091188352369487}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 584318336033577314}
   - component: {fileID: 4748931481177437843}
   - component: {fileID: 8952841677085486132}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Human
   m_TagString: Human
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -543,7 +543,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4938762742874732869}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -561,7 +561,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!95 &4748931481177437843
 Animator:
   serializedVersion: 7

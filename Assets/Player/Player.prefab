@@ -231,7 +231,7 @@ MonoBehaviour:
   shoutShockwave: {fileID: 8725745748364352659, guid: 4b516b29257a8f44587958742e1297fb, type: 3}
   gameManager: {fileID: 0}
   PlayerSpeed: 5
-  ScareDuration: 1
+  ScareDuration: 0.5
   ScareCooldown: 1
   KillDuration: 0.3
   KillCooldown: 5
