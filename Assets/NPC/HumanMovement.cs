@@ -59,6 +59,8 @@ public class HumanMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         GetComponentInChildren<DetectionComponent>().PlayerDetected += OnPlayerSpotted;
+        GetComponentInChildren<DetectionComponent>().PlayerLost += OnPlayerLost;
+
         human_sprite = GetComponent<SpriteRenderer>();
         flashlightSize = _detection.transform.localScale.x;
         _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(Vector3.left));
@@ -102,8 +104,6 @@ public class HumanMovement : MonoBehaviour
 
                 //Humans flashlight shines in the direction they travel in
                 _detection.transform.localEulerAngles = new Vector3(0, 0, VectorToAngle(moveVec));
-
-                Debug.DrawRay(transform.position, _targetPosition - transform.position,Color.green);
 
                 //Human goes back to idling once they are close enough to their destination
                 if (Vector2.Distance(transform.position, _targetPosition) < 1f)
@@ -271,7 +271,12 @@ public class HumanMovement : MonoBehaviour
         //Debug.Log("Player spotted by human " + player.gameObject.name);
         if (human_state != HUMAN_STATE.Scared) human_state = HUMAN_STATE.Suspicious;
     }
+    private void OnPlayerLost()
+    {
+        human_state = HUMAN_STATE.Idle;
+        spottedPlayer = null;
 
+    }
     //KillHuman() sets the human into the dead state, they become inert and the flashlight goes out
     private void KillHuman()
     {
@@ -281,11 +286,6 @@ public class HumanMovement : MonoBehaviour
         //SetSprite(spr_dead);
     }
 
-    //ResetHuman()
-    public void ResetHuman()
-    {
-        human_state = HUMAN_STATE.Idle;
-    }
 
     private void SetSprite(Sprite spr)
     {
