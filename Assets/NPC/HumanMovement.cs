@@ -227,6 +227,14 @@ public class HumanMovement : MonoBehaviour
                 player.UpdateKillCount();
             }
         }
+        else if (collision.gameObject.CompareTag("KillBox"))
+        {
+            Debug.Log(collision.gameObject.tag);
+            KillHuman();
+            gameManager.myPlayer.UpdateKillCount();
+            Debug.Log("killed by: " + collision.gameObject.name);
+
+        }
     }
 
     //HumanBecomeScared(player, isJumpScare) tells the player to become scared

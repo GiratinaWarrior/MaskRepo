@@ -3,12 +3,13 @@ using TMPro;
 using UnityEngine;
 using UnityEditor.Animations;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
     //Player
     public GameObject player;
-    private PlayerMovement myPlayer;
+    public PlayerMovement myPlayer;
 
     //Human
     public GameObject human; 
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Text scareText;
     [SerializeField] private Text ratingText;
     [SerializeField] private GameObject ReviewScreen;
+    [SerializeField] Light2D globalLight;
 
     [SerializeField] private Text scareScoreText;
 
@@ -111,6 +113,7 @@ public class GameManager : MonoBehaviour
         myPlayer.ResetCount();
         game_state = GAME.Active;
         GameActiveTimer = 0;
+        globalLight.intensity = 0.1f;
 
         for (int i = 0; i < 10; i++)
         {
@@ -125,6 +128,7 @@ public class GameManager : MonoBehaviour
         ReviewScreen.SetActive(true);
         UpdateEndText();
         game_state = GAME.Off;
+        globalLight.intensity = 1f;
 
         GameObject[] allHumans = GameObject.FindGameObjectsWithTag("Human");
         int numHumans = allHumans.Length;
