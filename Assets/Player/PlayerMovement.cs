@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations;
 
 public class PlayerMovement : MonoBehaviour
 {
-   
-    
 
     //Components
     [SerializeField] private Rigidbody2D rb;

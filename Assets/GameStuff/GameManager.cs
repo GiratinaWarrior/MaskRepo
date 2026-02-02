@@ -1,9 +1,10 @@
 using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
-using UnityEditor.Animations;
 using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Animations;
+//using UnityEditor.Animations;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class GameManager : MonoBehaviour
     //Human
     public GameObject human; 
 
-    [SerializeField] private AnimatorController[] variations;
+    [SerializeField] private RuntimeAnimatorController[] variations;
     [SerializeField] private float HumanSpawnRate = 5;
     private float HumanSpawnTimer = 0;
 
@@ -90,8 +91,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         //Immediately spawn the player upon game start
-         
-        
+          
         
     }
 

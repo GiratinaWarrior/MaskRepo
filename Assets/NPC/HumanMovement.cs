@@ -1,7 +1,7 @@
-using UnityEditor.Animations;
+using UnityEngine.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
-using static UnityEditor.PlayerSettings;
+//using UnityEditor.PlayerSettings;
 using static UnityEngine.UI.Image;
 
 public class HumanMovement : MonoBehaviour
